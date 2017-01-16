@@ -1,0 +1,41 @@
+    {
+      "$schema": "http://json-schema.org/draft-03/schema"
+      , "properties": {
+        "cod_oferta": {
+          "description": "Offer id"
+          , "maxLength": 4
+          , "minLength": 2
+          , "type": "string"
+        }
+        , "empresa": {
+          "description": "Nombre de la empresa que ofrece el puesto"
+          , "type": "string"
+        }
+        , "localidad": {
+          "description": "Localidad de la oferta"
+          , "type": "string"
+        }
+        , "jornada": {
+          "description": "Tipo de jornada a realizar"
+          , "type": "string"
+        }
+        , "duracion": {
+          "description": "Duración oferta de trabajo"
+          , "type": "string"
+        }
+        , "bolsa": {
+          "description": "Duración oferta de trabajo"
+          , "type": "string"
+        }
+        , "fecha_inicio": {
+          "description": "Duración oferta de trabajo"
+          , "type": "string"
+        }
+        , "num_plazas": {
+          "description": "Duración oferta de trabajo"
+          , "type": "string"
+        }
+      }
+      , "type": "object"
+      , "name": "Job"
+    }

@@ -1,0 +1,28 @@
+{
+
+  "jobs": [{
+      "cod_oferta": "7287"
+      , "empresa": "F1-connecting"
+      , "localidad": "Valencia"
+      , "jornada": "flexible"
+      , "duracion": "5 meses"
+      , "bolsa": "450"
+      , "fecha_inicio": "15-01-2017"
+      , "num_plazas": "2"
+}
+
+
+  
+    , {
+      "cod_oferta": "7288"
+      , "empresa": "Random"
+      , "localidad": "Valencia"
+      , "jornada": "flexible"
+      , "duracion": "8 meses"
+      , "bolsa": "600"
+      , "fecha_inicio": "07-02-2017"
+      , "num_plazas": "4"
+}]
+
+
+}
