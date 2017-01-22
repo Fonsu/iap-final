@@ -1,44 +1,107 @@
 #%RAML 0.8
 ---
-title: Jobs
+title: Job API
 version: 1.0
 baseUri: http://localhost:8058/api
 documentation:
   - title: Getting Started
     content: |
-      Jobs API using APIkit.
+      Jobs API using APIkit, developed for IAP final project.
+/job:
+  displayName: Job
+  #description: |
+  #  Individual job.
+  /{jobId}:
+    displayName: Job
+    #description: |
+    #  Individual job object
+    uriParameters:
+      jobId:
+        description: |
+          Four digit code that identifies the job.
+        type: string
+        example: 1217
+    get:
+      description: Retrieve single job information.
+      responses:
+        200:
+          body:
+            application/json:
+              example: !include examples/jobid-get-example.json
+        404:
+          description: |
+            Unable to find a job with that identifier
+    put:
+      description: Update job details, all except id and company
+      body:
+        application/json:
+          example: !include examples/jobid-put-example.json
+      responses:
+        204:
+          description: |
+            The job has been succesfully updated
+        404:
+          description: |
+            Unable to find a job with that identifier
+    delete:
+      description: Remove a job from the service.
+      responses:
+        204:
+          description: |
+            The job has been succesfully removed.
+        404:
+          description: |
+            Unable to find a job with that identifier             
 /jobs:
   displayName: Jobs
   #description: |
   #  A collection of jobs.
   get:
-    description: Obtain information from a collection of jobs simultaneously
-    queryParameters:
-      id:
-        description: |
-          Filter the list of jobs by specific id.
-        type: string
-        required: false
-        example: 7287
+    description: Obtain information from a collection of jobs
     responses:
       200:
         body:
           application/json:
-            example: !include examples/jobs-example.json
-  post:
-    description: Add a new job
-    body:
-      application/json:
-        example: !include examples/jobs-post-example.json
-        schema: !include schemas/jobs-schema-output.json
-    responses:
-      201:
+            example: !include examples/jobs-example.json  
+  /{jobCity}:
+    displayName: Job
+    #description: |
+    #  Individual job object
+    uriParameters:
+      jobCity:
         description: |
-          The job has been succesfully created
-        headers:
-          Location:
-            type: string
-            description: Location of the newly created job
-      409:
+          Name of the job's location.
+        type: string
+        required: false
+        example: valencia      
+    get:
+      description: Obtain information from a collection of jobs from a given city simultaneously
+      responses:
+        200:
+          body:
+            application/json:
+              example: !include examples/jobs-example.json
+  /{jobCity}/{jobCategory}:
+    displayName: Job
+    #description: |
+    #  Individual job object
+    uriParameters:
+      jobCity:
         description: |
-          The job already exists
+          Name of the job's location.
+        type: string
+        required: false
+        example: valencia
+      jobCategory:
+        description: |
+          Category of the job.
+        type: string
+        required: false
+        example: java
+    get:
+      description: Obtain information from a collection of jobs from a given city simultaneously
+      responses:
+          200:
+            body:
+                application/json:
+                  example: !include examples/jobs-example.json       

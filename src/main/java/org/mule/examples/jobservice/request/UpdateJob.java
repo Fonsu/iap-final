@@ -1,11 +1,3 @@
-/**
- * MuleSoft Examples
- * Copyright 2014 MuleSoft, Inc.
- *
- * This product includes software developed at
- * MuleSoft, Inc. (http://www.mulesoft.com/).
- */
-
 package org.mule.examples.jobservice.request;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
@@ -18,18 +10,82 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement(namespace = "http://mulesoft.com/schemas")
 public class UpdateJob {
 
-	// TODO Clase para actualizar trabajo
+	private String localidad;
+	private String categoria;
+	private String jornada;
+	private String duracion;
+	private String bolsa;
+	private String fecha_inicio;
+	private String num_plazas;
 
-	private String name;
+    @JsonProperty
+    @XmlElement(required = false, namespace = "http://mulesoft.com/schemas")
+    public String getLocalidad() {
+        return localidad;
+    }
+
+    public void setLocalidad(String localidad) {
+        this.localidad = localidad;
+    }    
+    
+    @JsonProperty
+    @XmlElement(required = false, namespace = "http://mulesoft.com/schemas")
+    public String getCategoria() {
+		return categoria;
+	}
+
+	public void setCategoria(String categoria) {
+		this.categoria = categoria;
+	}
 
 	@JsonProperty
-	@XmlElement(required = false, namespace = "http://mulesoft.com/schemas")
-	public String getName() {
-		return name;
+    @XmlElement(required = false, namespace = "http://mulesoft.com/schemas")
+    public String getJornada() {
+        return jornada;
+    }
+
+    public void setJornada(String jornada) {
+        this.jornada = jornada;
+    }
+
+    @JsonProperty
+    @XmlElement(required = false, namespace = "http://mulesoft.com/schemas")
+    public String getDuracion() {
+        return duracion;
+    }
+
+    public void setDuracion(String duracion) {
+        this.duracion = duracion;
+    }
+    
+    @JsonProperty
+    @XmlElement(required = false, namespace = "http://mulesoft.com/schemas")
+    public String getBolsa() {
+        return bolsa;
+    }
+
+    public void setBolsa(String bolsa) {
+        this.bolsa = bolsa;
+    }
+    
+    @JsonProperty
+    @XmlElement(required = false, namespace = "http://mulesoft.com/schemas")
+    public String getFecha_inicio() {
+		return fecha_inicio;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+    public void setFecha_inicio(String fecha_inicio) {
+        this.fecha_inicio = fecha_inicio;
+    }
+    
+    @JsonProperty
+    @XmlElement(required = false, namespace = "http://mulesoft.com/schemas")
+    public String getNum_plazas() {
+		return num_plazas;
 	}
+
+	public void setNum_plazas(String num_plazas) {
+		this.num_plazas = num_plazas;
+	}    
 
 }

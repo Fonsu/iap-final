@@ -1,11 +1,3 @@
-/**
- * MuleSoft Examples
- * Copyright 2014 MuleSoft, Inc.
- *
- * This product includes software developed at
- * MuleSoft, Inc. (http://www.mulesoft.com/).
- */
-
 package org.mule.examples.jobservice.response;
 
 import org.codehaus.jackson.annotate.JsonAutoDetect;
@@ -20,6 +12,7 @@ public class Job {
 	private String cod_oferta;
 	private String empresa;
 	private String localidad;
+	private String categoria;
 	private String jornada;
 	private String duracion;
 	private String bolsa;
@@ -54,6 +47,16 @@ public class Job {
 
 	public void setLocalidad(String localidad) {
 		this.localidad = localidad;
+	}
+	
+	@JsonProperty
+	@XmlElement(required = true)
+	public String getCategoria() {
+		return categoria;
+	}
+
+	public void setCategoria(String categoria) {
+		this.categoria = categoria;
 	}
 
 	@JsonProperty

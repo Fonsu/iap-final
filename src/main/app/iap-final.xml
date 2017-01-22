@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking" xmlns:jersey="http://www.mulesoft.org/schema/mule/jersey" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:apikit="http://www.mulesoft.org/schema/mule/apikit" xmlns:file="http://www.mulesoft.org/schema/mule/file" xmlns:mongo="http://www.mulesoft.org/schema/mule/mongo" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+<mule xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking" xmlns:jersey="http://www.mulesoft.org/schema/mule/jersey" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:apikit="http://www.mulesoft.org/schema/mule/apikit" xmlns:file="http://www.mulesoft.org/schema/mule/file" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
 	xmlns:spring="http://www.springframework.org/schema/beans" 
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
@@ -11,7 +11,13 @@ http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/htt
 http://www.mulesoft.org/schema/mule/jersey http://www.mulesoft.org/schema/mule/jersey/current/mule-jersey.xsd
 http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd">
     <apikit:config name="jobservice-config" raml="jobservice.raml" consoleEnabled="true" consolePath="console" doc:name="Router">
-        <apikit:flow-mapping resource="/jobs" action="get" flow-ref="get:/jobs:jobs-config"/>
+        <apikit:flow-mapping resource="/jobs" action="post" flow-ref="post:/jobs:jobservice-config"/>
+        <apikit:flow-mapping resource="/job/{jobId}" action="put" flow-ref="put:/job/{jobId}:jobservice-config"/>
+        <apikit:flow-mapping resource="/jobs/{jobId}" action="delete" flow-ref="delete:/job/{jobId}:jobservice-config"/>
+        <apikit:flow-mapping resource="/job/{jobId}" action="get" flow-ref="get:/job/{jobId}:jobservice-config"/>
+        <apikit:flow-mapping resource="/jobs/{jobCity}/{jobCategory}" action="get" flow-ref="get:/jobs/{jobCity}/{jobCategory}:jobservice-config"/>
+        <apikit:flow-mapping resource="/jobs/{jobCity}" action="get" flow-ref="get:/jobs/{jobCity}:jobservice-config"/>
+        <apikit:flow-mapping resource="/jobs" action="get" flow-ref="get:/jobs:jobservice-config"/>
     </apikit:config>
     <http:listener-config name="HTTP_Listener_Configuration" host="0.0.0.0" port="8058" doc:name="HTTP Listener Configuration"/>
     <spring:beans>
@@ -22,8 +28,33 @@ http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/m
         <apikit:router config-ref="jobservice-config" doc:name="APIkit Router"/>
         <exception-strategy ref="jobs-apiKitGlobalExceptionMapping" doc:name="Reference Exception Strategy"/>
     </flow>
-    <flow name="get:/jobs:jobs-config">
-        <expression-component doc:name="Call API"><![CDATA[payload = app.registry['jobservice-api'].getJobs()]]></expression-component>
+    <flow name="get:/jobs:jobservice-config">
+        <expression-component doc:name="Expression"><![CDATA[payload = app.registry['jobservice-api'].getJobs(null);]]></expression-component>
+    </flow>
+    <flow name="get:/jobs/{jobCity}:jobservice-config">
+        <expression-component doc:name="Expression"><![CDATA[payload = app.registry['jobservice-api'].getJobs(jobCity);]]></expression-component>
+    </flow>
+    <flow name="get:/jobs/{jobCity}/{jobCategory}:jobservice-config">
+        <expression-component doc:name="Call API"><![CDATA[payload = app.registry['jobservice-api'].getJobs(jobCity,jobCategory);]]></expression-component>
+    </flow>
+    <flow name="post:/jobs:jobservice-config">
+        <custom-transformer class="org.mule.module.apikit.transform.PayloadNormalizerTransformer" returnClass="org.mule.examples.jobservice.request.Job" doc:name="Java"/>
+        <set-property propertyName="Location" value="http://localhost:8058/api/jobs/" doc:name="Property"/>
+        <logger message="#[payload.id]" level="INFO" doc:name="Log ID"/>
+        <expression-component doc:name="Call API"><![CDATA[app.registry['jobservice-api'].addJob(payload);]]></expression-component>
+        <set-payload value="#[NullPayload.getInstance()]" doc:name="Set Payload to Null Payload"/>
+    </flow>
+    <flow name="put:/job/{jobId}:jobservice-config">
+        <custom-transformer class="org.mule.module.apikit.transform.PayloadNormalizerTransformer" returnClass="org.mule.examples.jobservice.request.UpdateJob" doc:name="Java"/>
+        <logger message="IMPRIMO #[message.payload]" level="INFO" doc:name="Logger"/>
+        <expression-component doc:name="Call API"><![CDATA[payload = app.registry['jobservice-api'].updateJob(jobId, payload);]]></expression-component>
+        <set-payload value="#[NullPayload.getInstance()]" doc:name="Set Payload to Null Payload"/>
+    </flow>
+    <flow name="delete:/job/{jobId}:jobservice-config">
+        <expression-component doc:name="Call API"><![CDATA[app.registry['jobservice-api'].deleteJob(jobId);]]></expression-component>
+    </flow>  
+    <flow name="get:/job/{jobId}:jobservice-config">
+        <expression-component doc:name="Call API"><![CDATA[payload = app.registry['jobservice-api'].getJob(jobId);]]></expression-component>
     </flow>
     <apikit:mapping-exception-strategy name="jobs-apiKitGlobalExceptionMapping">
         <apikit:mapping statusCode="404">
@@ -34,12 +65,12 @@ http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/m
         <apikit:mapping statusCode="405">
             <apikit:exception value="org.mule.module.apikit.exception.MethodNotAllowedException"/>
             <set-property propertyName="Content-Type" value="application/json" doc:name="Set Content-Type"/>
-            <set-payload value="{ &quot;message&quot;: &quot;Method not allowed&quot; }" doc:name="Copy_of_Set Payload to message"/>
+            <set-payload value="{ &quot;message&quot;: &quot;Method not allowed&quot; }" doc:name="Set Payload to message"/>
         </apikit:mapping>
         <apikit:mapping statusCode="415">
             <apikit:exception value="org.mule.module.apikit.exception.UnsupportedMediaTypeException"/>
             <set-property propertyName="Content-Type" value="application/json" doc:name="Set Content-Type"/>
-            <set-payload value="{ &quot;message&quot;: &quot;Unsupported media type&quot; }" doc:name="Copy_of_Set Payload to message"/>
+            <set-payload value="{ &quot;message&quot;: &quot;Unsupported media type&quot; }" doc:name="Set Payload to message"/>
         </apikit:mapping>
         <apikit:mapping statusCode="406">
             <apikit:exception value="org.mule.module.apikit.exception.NotAcceptableException"/>

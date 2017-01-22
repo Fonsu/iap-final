@@ -9,7 +9,6 @@ import org.mule.module.apikit.exception.MuleRestException;
 import org.mule.module.apikit.exception.NotFoundException;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class JobServiceAPI {
@@ -20,40 +19,57 @@ public class JobServiceAPI {
 		jobService = new JobService();
 		jobService.initialize();
 	}
-
-	public Jobs getJobs() {
+	
+	public Jobs getJobs(){
+		return getJobs();
+	}
+	
+	public Jobs getJobs(String city){
+		return getJobs(city,null);
+	}
+	
+	public Jobs getJobs(String city, String category) {
 		List<Job> jobsList = new ArrayList<Job>();
-		List<org.mule.examples.jobservice.model.Job> jobs = jobService.getJobs();
+        List<org.mule.examples.jobservice.model.Job> jobs = jobService.getJobs();
+		if (city!=null && category==null){ jobs = jobService.getJobs(city,null); }
+		else { if (city!=null && category!=null){ jobs = jobService.getJobs(city,category);}}
+		
 		for (org.mule.examples.jobservice.model.Job job : jobs) {
 			Job jobResp = new Job();
 			jobResp.setCod_oferta(job.getCod_oferta());
 			jobResp.setEmpresa(job.getEmpresa());
 			jobResp.setLocalidad(job.getLocalidad());
-			jobResp.setJornada(job.getJornada());
-			jobResp.setDuracion(job.getJornada());
+			jobResp.setCategoria(job.getCategoria());
+			jobResp.setJornada(job.getJornada());			
+			jobResp.setDuracion(job.getDuracion());
 			jobResp.setBolsa(job.getBolsa());
 			jobResp.setFecha_inicio(job.getFecha_inicio());
 			jobResp.setNum_plazas(job.getNum_plazas());
-
 			jobsList.add(jobResp);
-		}
-
+		}		
 		Jobs jobsResp = new Jobs();
 		jobsResp.setJobs(jobsList);
-		return jobsResp;
+		return jobsResp;		
 	}
 
-	/*
-	 * public JobService getJob(String jobId) throws MuleRestException {
-	 * if(!job.hasJob(jobId)) { throw new NotFoundException("Job " + jobId +
-	 * " does not exist"); }
-	 * 
-	 * org.mule.examples.jobservice.model.JobService job = job.getJob(jobId);
-	 * JobService jobResp = new JobService(); jobResp.setId(job.getId());
-	 * jobResp.setName(job.getName()); jobResp.setHomeCity(job.getHomeCity());
-	 * jobResp.setStadium(job.getJornada());
-	 * jobResp.setMatches(job.getMatchesPlayed()); return jobResp; }
-	 */
+	public Job getJob(String jobId) throws MuleRestException {
+		if (!jobService.hasJob(jobId)) {
+			throw new NotFoundException("Job " + jobId + " does not exist");
+		}
+
+		org.mule.examples.jobservice.model.Job job = jobService.getJob(jobId);
+		Job jobResp = new Job();
+		jobResp.setCod_oferta(job.getCod_oferta());
+		jobResp.setEmpresa(job.getEmpresa());
+		jobResp.setLocalidad(job.getLocalidad());
+		jobResp.setCategoria(job.getCategoria());
+		jobResp.setJornada(job.getJornada());
+		jobResp.setDuracion(job.getDuracion());
+		jobResp.setBolsa(job.getBolsa());
+		jobResp.setFecha_inicio(job.getFecha_inicio());
+		jobResp.setNum_plazas(job.getNum_plazas());		
+		return jobResp;
+	}	 
 
 	public String addJob(org.mule.examples.jobservice.request.Job job) throws MuleRestException {
 		if (jobService.hasJob(job.getCod_oferta())) {
@@ -64,6 +80,7 @@ public class JobServiceAPI {
 		newJob.setCod_oferta(job.getCod_oferta());
 		newJob.setEmpresa(job.getEmpresa());
 		newJob.setLocalidad(job.getLocalidad());
+		newJob.setCategoria(job.getCategoria());
 		newJob.setJornada(job.getJornada());
 		newJob.setDuracion(job.getDuracion());
 		newJob.setBolsa(job.getBolsa());
@@ -73,5 +90,46 @@ public class JobServiceAPI {
 		jobService.addJob(newJob);
 		return job.getCod_oferta();
 	}
+	
+	public void updateJob(String jobId, UpdateJob updateJob) throws MuleRestException {
+        if(!jobService.hasJob(jobId)) {
+            throw new NotFoundException("Job " + jobId + " does not exist");
+        }
+        
+        org.mule.examples.jobservice.model.Job job = jobService.getJob(jobId);
+        if(updateJob.getLocalidad() != null) {
+            job.setLocalidad(updateJob.getLocalidad());
+        }
+        
+        if(updateJob.getCategoria() != null) {
+            job.setCategoria(updateJob.getCategoria());
+        }
+        
+        if(updateJob.getJornada() != null) {
+            job.setJornada(updateJob.getJornada());
+        }
 
+        if(updateJob.getDuracion() != null) {
+            job.setDuracion(updateJob.getDuracion());
+        }
+
+        if(updateJob.getBolsa() != null) {
+            job.setBolsa(updateJob.getBolsa());
+        }
+        
+        if(updateJob.getFecha_inicio() != null) {
+            job.setFecha_inicio(updateJob.getFecha_inicio());
+        }
+        
+        if(updateJob.getNum_plazas() != null) {
+            job.setNum_plazas(updateJob.getNum_plazas());
+        }
+    }
+	
+	public void deleteJob(String jobId) throws MuleRestException {
+        if(!jobService.hasJob(jobId)) {
+            throw new NotFoundException("Job " + jobId + " does not exist");
+        }
+        jobService.deleteJob(jobId);
+    }
 }

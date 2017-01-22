@@ -13,6 +13,7 @@ public class Job {
 	private String cod_oferta;
 	private String empresa;
 	private String localidad;
+	private String categoria;
 	private String jornada;
 	private String duracion;
 	private String bolsa;
@@ -45,8 +46,18 @@ public class Job {
 		return localidad;
 	}
 
-	public void setLocalidad(String l) {
-		this.localidad = l;
+	public void setLocalidad(String localidad) {
+		this.localidad = localidad;
+	}
+	
+	@JsonProperty
+	@XmlElement(required = true, namespace = "http://mulesoft.com/schemas")
+	public String getCategoria() {
+		return categoria;
+	}
+
+	public void setCategoria(String categoria) {
+		this.categoria = categoria;
 	}
 
 	@JsonProperty

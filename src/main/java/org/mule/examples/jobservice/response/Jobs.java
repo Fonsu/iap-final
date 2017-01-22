@@ -15,8 +15,7 @@ import javax.xml.bind.annotation.XmlElement;
 
 public class Jobs {
 	private List<Job> jobs;
-
-	@XmlElement(name = "jobs")
+	
 	public List<Job> getJobs() {
 		return jobs;
 	}

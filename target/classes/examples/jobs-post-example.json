@@ -1,10 +1,11 @@
           {
-            "cod_oferta": "1234"
-            , "empresa": "EmpresaEjemplo"
+            "cod_oferta": "4602"
+            , "empresa": "Ayuntamiento de Valencia"
             , "localidad": "Valencia"
+            , "categoria": "Administracion"
             , "jornada": "flexible"
-            , "duracion": "36 meses"
-            , "bolsa": "300€"
+            , "duracion": "6 meses"
+            , "bolsa": "400€"
             , "fecha_inicio": "31-01-2017"
-            , "num_plazas": "20"
+            , "num_plazas": "5"
           }

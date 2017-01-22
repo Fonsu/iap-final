@@ -13,11 +13,13 @@ public class Job {
 	private String cod_oferta;
 	private String empresa;
 	private String localidad;
+	private String categoria;
 	private String jornada;
 	private String duracion;
 	private String bolsa;
 	private String fecha_inicio;
 	private String num_plazas;
+	
 
 	public String getId() {
 		return cod_oferta;
@@ -49,6 +51,14 @@ public class Job {
 
 	public void setLocalidad(String localidad) {
 		this.localidad = localidad;
+	}
+
+	public String getCategoria() {
+		return categoria;
+	}
+
+	public void setCategoria(String categoria) {
+		this.categoria = categoria;
 	}
 
 	public String getJornada() {
